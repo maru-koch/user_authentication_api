@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     #############################
     #-------- Added apps -------#
-    'app'
+    'api',
     'rest_framework'
 ]
 
@@ -56,10 +56,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'auth_system.urls'
 
-REST_FRAMEWORK = [{
+REST_FRAMEWORK = ({
     'default_permission_classes': 
     'rest_framwork.permissions.AllowAny'
-}]
+})
 
 TEMPLATES = [
     {
