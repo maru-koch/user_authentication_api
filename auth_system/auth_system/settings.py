@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     #############################
     #-------- Added apps -------#
     'api',
-    'rest_framework'
+    'rest_framework', # from djangorestframework
+    'rest_framework.authtoken' # from restframework_simplejwt
+    'rest_auth' # from djano-rest-auto
 ]
 
 MIDDLEWARE = [
@@ -57,8 +59,13 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'auth_system.urls'
 
 REST_FRAMEWORK = ({
-    'default_permission_classes': 
-    'rest_framwork.permissions.AllowAny'
+    'DEFAULT_PERMISSION_CLASSES': 
+    ['rest_framework.permissions.AllowAny'],
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+    
 })
 
 TEMPLATES = [
