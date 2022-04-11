@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #############################
+    #-------- Added apps -------#
+    'app'
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +55,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'auth_system.urls'
+
+REST_FRAMEWORK = [{
+    'default_permission_classes': 
+    'rest_framwork.permissions.AllowAny'
+}]
 
 TEMPLATES = [
     {
