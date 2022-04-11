@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from .models import CustomUser
+from .serializer import ApiSerializer
 
 class ListUsers(ListAPIView):
-    pass
+    queryset = CustomUser.objects.all()
+    serializer_class = ApiSerializer
+
 
 class RetrieveUser(RetrieveAPIView):
-    pass
+    queryset = CustomUser.objects.all()
+    serializer_class = ApiSerializer
