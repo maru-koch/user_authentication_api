@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     #############################
     #-------- Added apps -------#
     'api',
-    'rest_framework', # from djangorestframework
-    'rest_framework.authtoken' # from restframework_simplejwt
-    'rest_auth' # from djano-rest-auto
+    'rest_framework',               # from djangorestframework
+    'rest_framework.authtoken',     # from restframework_simplejwt
+    'rest_auth'                     # from djano-rest-auto
 ]
 
 MIDDLEWARE = [
