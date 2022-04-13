@@ -45,6 +45,9 @@ class CustomUser(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
+    phone = models.IntegerField(blank=False)
+    isVerified = models.BooleanField(blank=False, default=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'email', 'password', ]
 
@@ -60,4 +63,11 @@ class CustomUser(AbstractBaseUser):
         return True
 
 
+#: for OTP Verification
+class phoneModel(models.Model):
+    Mobile = models.IntegerField(blank=False)
+    isVerified = models.BooleanField(blank=False, default=False)
+    counter = models.IntegerField(default=0, blank=False)
 
+    def __str__(self):
+            return str(self.Mobile)

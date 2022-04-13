@@ -39,11 +39,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #############################
-    #-------- Added apps -------#
+    #-------- REST_FRAMEWORK -------#
     'api',
     'rest_framework',               # from djangorestframework
     'rest_framework.authtoken',     # from restframework_simplejwt
-    'rest_auth'                     # from djano-rest-auto
+    
+    #############################
+    #-------- REST_AUTH -------#
+
+    'rest_auth',  
+    'rest_auth.registration',                 # from djano-rest-auto
+
+    #############################
+    #-------- DJANGO_ALLAUTH -------#
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +76,9 @@ REST_FRAMEWORK = ({
     'DEFAULT_AUTHENTICATION_CLASSES':[
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    #: Things will break without this line of code --> coreapi 3.10 incompatibility --> AutoSchema
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
     
 })
 
@@ -138,3 +152,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#############################
+#-------- EMAIL BACKEND -------#
+# - receives the email automatically send by django on registration
+# - 
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SITE_ID = 1
