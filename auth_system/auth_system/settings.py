@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     #############################
     #-------- REST_FRAMEWORK -------#
     'api',
-    'rest_framework',               # from djangorestframework
+    'rest_framework',
+    'rest_framework_swagger',               # from djangorestframework
     'rest_framework.authtoken',     # from restframework_simplejwt
     
     #############################

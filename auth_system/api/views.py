@@ -4,10 +4,11 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
+
 from django.core.exceptions import ObjectDoesNotExist
 import pyotp
 from .models import CustomUser
-from .serializer import ApiSerializer
+from .serializer import ApiSerializer, ListSerializer
 
 #OTP
 from datetime import datetime
@@ -16,7 +17,7 @@ import base64
 
 class ListUsers(ListAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = ApiSerializer
+    serializer_class = ListSerializer
 
 
 class RegisterUser(CreateAPIView):
@@ -25,22 +26,21 @@ class RegisterUser(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, headers = headers)
+        if serializer.is_valid(raise_exception=True):
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            serializer.save
+        return Response("saved successfully", headers = headers)
         
 
 class RetrieveUser(RetrieveAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = ApiSerializer
-    permission_classes = (IsAuthenticated)
+    serializer_class = ListSerializer
 
 
 class ConfirmPassword(UpdateAPIView):
     model = CustomUser
     serializer_class = ApiSerializer
-    permission_classes = (IsAuthenticated)
 
     def get_object(self, queryset = None):
         obj = self.request.user

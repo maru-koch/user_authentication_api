@@ -16,11 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.schemas import get_schema_view
+from rest_framework_swagger.views import get_swagger_view
 from rest_framework.documentation import include_docs_urls
 
 #: Defining Views for schema and documentation endpoints
 PROJECT_TITLE = "User Authentication API"
-schema_view = get_schema_view(title = PROJECT_TITLE)
+PROJECT_DESCRIPTION = "A RESTful API to authenticate users"
+
+# schema_view = get_schema_view(title = PROJECT_TITLE)
+swagger_view = get_swagger_view(title = PROJECT_TITLE)
 doc = include_docs_urls(title = PROJECT_TITLE)
 
 urlpatterns = [
@@ -29,7 +33,7 @@ urlpatterns = [
     path('account/', include('rest_framework.urls')),
     path('auth/', include('rest_auth.urls')),
     path('auth/registration', include('rest_auth.registration.urls')),
-    path('schema', schema_view),
+    path('swagger-docs/', swagger_view),
     path('docs', doc)
 
     # django_allauth
