@@ -2,9 +2,16 @@
 from rest_framework.generics import RetrieveAPIView, CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from rest_framework import status
+from django.core.exceptions import ObjectDoesNotExist
+import pyotp
 from .models import CustomUser
 from .serializer import ApiSerializer
+
+#OTP
+from datetime import datetime
+import base64
 
 
 class ListUsers(ListAPIView):
@@ -61,3 +68,41 @@ class ConfirmPassword(UpdateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class generateKey:
+    @staticmethod
+    def returnValue(phone):
+        return str(phone) + str(datetime.date(datetime.now())) + "Some Random Secret Key"
+        
+
+class GenerateOtp(APIView):
+
+    @staticmethod
+    def get(request, phone):
+        try:
+            user = CustomUser.objects.get(phone = phone)  # if Mobile already exists the take this else create New One
+        except ObjectDoesNotExist:
+            user = CustomUser.objects.get(pk = request.user.id)
+            user.phone = phone 
+            keygen = generateKey()
+            key = base64.b32encode(keygen.returnValue(phone).encode())  # Key is generated
+            OTP = pyotp.HOTP(key)  # HOTP Model for OTP is created
+            # print(OTP.at(Mobile.counter))
+        # Using Multi-Threading send the OTP Using Messaging Services like Twilio or Fast2sms
+        return Response({"OTP": OTP.at(user.phone)}, status=200)  # Just for demonstration
+
+    # This Method verifies the OTP
+    @staticmethod
+    def post(request, phone):
+        try:
+            phone = CustomUser.objects.get(phone=phone)
+        except ObjectDoesNotExist:
+            return Response("User does not exist", status=404)  # False Call
+
+        keygen = generateKey()
+        key = base64.b32encode(keygen.returnValue(phone).encode())  # Generating Key
+        OTP = pyotp.HOTP(key)  # HOTP Model
+        if OTP.verify(request.data["otp"], phone):  # Verifying the OTP
+            phone.isVerified = True
+            phone.save()
+            return Response("You are authorised", status=200)
+        return Response("OTP is wrong", status=400)
