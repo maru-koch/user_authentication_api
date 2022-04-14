@@ -25,13 +25,13 @@ PROJECT_DESCRIPTION = "A RESTful API to authenticate users"
 
 # schema_view = get_schema_view(title = PROJECT_TITLE)
 swagger_view = get_swagger_view(title = PROJECT_TITLE)
-doc = include_docs_urls(title = PROJECT_TITLE)
+doc = include_docs_urls(title = PROJECT_TITLE, description = PROJECT_DESCRIPTION)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('api.urls')),
-    path('account/', include('rest_framework.urls')),
-    path('auth/', include('rest_auth.urls')),
+    path('api/', include('rest_framework.urls')),
+    path('api/auth/', include('rest_auth.urls')),
     path('auth/registration', include('rest_auth.registration.urls')),
     path('swagger-docs/', swagger_view),
     path('docs', doc)

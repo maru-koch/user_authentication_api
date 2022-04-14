@@ -1,7 +1,7 @@
 
+from math import perm
 from rest_framework.generics import RetrieveAPIView, CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
 
@@ -9,16 +9,20 @@ from django.core.exceptions import ObjectDoesNotExist
 import pyotp
 from .models import CustomUser
 from .serializer import ApiSerializer, ListSerializer
+import random
 
 #OTP
 from datetime import datetime
 import base64
 
-
 class ListUsers(ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = ListSerializer
-
+    
+class WelcomeView(APIView):
+    def get_object(self, queryset = None):
+        obj = self.request.user
+        return Response(obj)
 
 class RegisterUser(CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -71,7 +75,8 @@ class ConfirmPassword(UpdateAPIView):
 class generateKey:
     @staticmethod
     def returnValue(phone):
-        return str(phone) + str(datetime.date(datetime.now())) + "Some Random Secret Key"
+        random_number = ''.join([str(random.randint(1, 9)), str(random.randint(1, 9)), str(random.randint(1, 9))])
+        return str(phone) + str(datetime.date(datetime.now())) + random_number
         
 
 class GenerateOtp(APIView):
@@ -81,14 +86,15 @@ class GenerateOtp(APIView):
         try:
             user = CustomUser.objects.get(phone = phone)  # if Mobile already exists the take this else create New One
         except ObjectDoesNotExist:
+            return Response(f"No user with the Phone number: {phone}", status=404)
+        else:
             user = CustomUser.objects.get(pk = request.user.id)
             user.phone = phone 
             keygen = generateKey()
             key = base64.b32encode(keygen.returnValue(phone).encode())  # Key is generated
             OTP = pyotp.HOTP(key)  # HOTP Model for OTP is created
-            # print(OTP.at(Mobile.counter))
-        # Using Multi-Threading send the OTP Using Messaging Services like Twilio or Fast2sms
-        return Response({"OTP": OTP.at(user.phone)}, status=200)  # Just for demonstration
+            # Using Multi-Threading send the OTP Using Messaging Services like Twilio or Fast2sms
+            return Response({"OTP": OTP.at(user.phone)}, status=200)  # Just for demonstration
 
     # This Method verifies the OTP
     @staticmethod
